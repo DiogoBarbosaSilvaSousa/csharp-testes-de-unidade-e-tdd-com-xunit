@@ -3,49 +3,51 @@ using Xunit;
 
 namespace Alura.LeilaoOnline.Tests
 {
-    public class LeilaoTestes
-    {
-        [Fact]
-        public void LeilaoComApenasUmLance()
-        {
-            //Arranje - cenário
-            var leilao = new Leilao("Van Gogh");
-            var fulano = new Interessada("Fulano", leilao);
+    public class LeilaoTerminaPregao
+    {                
 
-            leilao.RecebeLance(fulano, 800);
-
-
-            //Act - método sob teste
-            leilao.TerminaPregao();
-
-            //Assert
-            var valorEsperado = 800;
-            var valorObtido = leilao.Ganhador.Valor;
-
-            Assert.Equal(valorEsperado, valorObtido);
-        }
-
-        [Fact]       
-        public void LeilaoComVariosLances()
+        [Theory]
+        [InlineData(1200, new double[] { 800, 900, 1000, 1200 })]
+        [InlineData(1000, new double[] { 800, 900, 1000, 990 })]
+        [InlineData(800, new double[] { 800 })]
+        public void RetornaMaiorValorDadoLeilaoComPeloMenosUmLance(double valorEsperado,double[] ofertas)
         {
             //Arranje - cenário
             var leilao = new Leilao("Van Gogh");
             var fulano = new Interessada("Fulano", leilao);
             var maria = new Interessada("maria", leilao);
 
-            leilao.RecebeLance(fulano, 800);
-            leilao.RecebeLance(maria, 900);
-            leilao.RecebeLance(fulano, 1000);
-            leilao.RecebeLance(maria, 990);
+            foreach(var valor in ofertas)
+            {
+                leilao.RecebeLance(fulano, valor);
+            }
+
+          
+            //Act - método sob teste
+            leilao.TerminaPregao();
+
+            //Assert
+            var valorObtido = leilao.Ganhador.Valor;
+
+            Assert.Equal(valorEsperado, valorObtido);
+        }
+
+        [Fact]
+        public void RetornaZerpDadoLeilaoSemLances()
+        {
+            //Arranje - cenário
+            var leilao = new Leilao("Van Gogh");
 
             //Act - método sob teste
             leilao.TerminaPregao();
 
             //Assert
-            var valorEsperado = 1000;
+            var valorEsperado = 0;
             var valorObtido = leilao.Ganhador.Valor;
 
             Assert.Equal(valorEsperado, valorObtido);
+
         }
+
     }
 }
