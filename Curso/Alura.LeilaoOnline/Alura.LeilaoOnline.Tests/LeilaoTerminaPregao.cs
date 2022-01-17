@@ -17,12 +17,26 @@ namespace Alura.LeilaoOnline.Tests
             var fulano = new Interessada("Fulano", leilao);
             var maria = new Interessada("maria", leilao);
 
-            foreach(var valor in ofertas)
+            leilao.IniciaPregao();
+
+            float intercalar = 0;
+
+            foreach (var valor in ofertas)
             {
-                leilao.RecebeLance(fulano, valor);
+                if ((intercalar % 2) == 0)
+                {
+                    leilao.RecebeLance(fulano, valor);
+                }
+                else
+                {
+                    leilao.RecebeLance(maria, valor);
+                }
+
+                intercalar++;
+
             }
 
-          
+
             //Act - método sob teste
             leilao.TerminaPregao();
 
